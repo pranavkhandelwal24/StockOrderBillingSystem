@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
+         version="3.1">
+
+    <display-name>StockOrderBillingSystem</display-name>
+
+    <!-- ✅ Add Stock Servlet -->
+    <servlet>
+        <servlet-name>AddStockServlet</servlet-name>
+        <servlet-class>com.inventory.controller.AddStockServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddStockServlet</servlet-name>
+        <url-pattern>/addStock</url-pattern>
+    </servlet-mapping>
+
+
+
+    <!-- ✅ Place Order Servlet -->
+    <servlet>
+        <servlet-name>PlaceOrderServlet</servlet-name>
+        <servlet-class>com.inventory.controller.PlaceOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PlaceOrderServlet</servlet-name>
+        <url-pattern>/placeOrder</url-pattern>
+    </servlet-mapping>
+
+    <!-- ✅ Fetch Customer Servlet (AJAX) -->
+    <servlet>
+        <servlet-name>FetchCustomerServlet</servlet-name>
+        <servlet-class>com.inventory.controller.FetchCustomerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FetchCustomerServlet</servlet-name>
+        <url-pattern>/fetchCustomer</url-pattern>
+    </servlet-mapping>
+
+    <!-- ✅ Fetch Stock Options for Dropdown (AJAX) -->
+    <servlet>
+        <servlet-name>FetchStockOptionsServlet</servlet-name>
+        <servlet-class>com.inventory.controller.FetchStockOptionsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FetchStockOptionsServlet</servlet-name>
+        <url-pattern>/fetchStockOptions</url-pattern>
+    </servlet-mapping>
+
+    <!-- ✅ View Bill (uses JSP only, no servlet needed) -->
+
+
+	
+	<servlet>
+    <servlet-name>ViewOrdersServlet</servlet-name>
+    <servlet-class>com.inventory.controller.ViewOrdersServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ViewOrdersServlet</servlet-name>
+    <url-pattern>/viewOrders</url-pattern>
+</servlet-mapping>
+	
+	<servlet>
+    <servlet-name>ExportPDFServlet</servlet-name>
+    <servlet-class>com.inventory.controller.ExportPDFServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ExportPDFServlet</servlet-name>
+    <url-pattern>/exportPDF</url-pattern>
+</servlet-mapping>
+	
+	<servlet>
+    <servlet-name>AdjustStockServlet</servlet-name>
+    <servlet-class>com.inventory.controller.AdjustStockServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>AdjustStockServlet</servlet-name>
+    <url-pattern>/adjustStock</url-pattern>
+</servlet-mapping>
+	
+    <!-- ✅ Welcome Page -->
+    <welcome-file-list>
+       <welcome-file>dashboard.jsp</welcome-file>
+
+    </welcome-file-list>
+
+</web-app>
