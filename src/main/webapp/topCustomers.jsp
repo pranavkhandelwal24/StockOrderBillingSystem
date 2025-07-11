@@ -1,14 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%@ page import="java.sql.*, com.inventory.utils.DBUtil" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Top Customers</title>
+    <title>👑 Top Customers</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h2 {
+            font-weight: bold;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container mt-5">
     <h2>👑 Top Customers</h2>
     <a href="dashboard.jsp" class="btn btn-secondary mb-3">← Back to Dashboard</a>
 
@@ -23,40 +34,49 @@
              ResultSet rs = ps.executeQuery()) {
     %>
 
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Total Orders</th>
-                <th>Total Spent (₹)</th>
-            </tr>
-        </thead>
-        <tbody>
-        <%
-            boolean hasResults = false;
-            while (rs.next()) {
-                hasResults = true;
-        %>
-            <tr>
-                <td><%= rs.getString("name") %></td>
-                <td><%= rs.getString("email") %></td>
-                <td><%= rs.getString("phone") %></td>
-                <td><%= rs.getInt("total_orders") %></td>
-                <td><%= rs.getDouble("total_spent") %></td>
-            </tr>
-        <% } %>
-        <% if (!hasResults) { %>
-            <tr><td colspan="5" class="text-center text-muted">No customers found.</td></tr>
-        <% } %>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Total Orders</th>
+                    <th>Total Spent (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+            <%
+                int rank = 1;
+                boolean hasResults = false;
+                while (rs.next()) {
+                    hasResults = true;
+            %>
+                <tr>
+                    <td><strong><%= rank++ %></strong></td>
+                    <td><%= rs.getString("name") %></td>
+                    <td><%= rs.getString("email") %></td>
+                    <td><%= rs.getString("phone") %></td>
+                    <td><%= rs.getInt("total_orders") %></td>
+                    <td class="text-success fw-bold">₹<%= String.format("%.2f", rs.getDouble("total_spent")) %></td>
+                </tr>
+            <%
+                }
+                if (!hasResults) {
+            %>
+                <tr><td colspan="6" class="text-center text-muted">No customer data available.</td></tr>
+            <%
+                }
+            %>
+            </tbody>
+        </table>
+    </div>
 
-    <% } catch (Exception e) {
-        out.println("<div class='alert alert-danger'>Error loading top customers.</div>");
-        e.printStackTrace();
-    } %>
+    <% } catch (Exception e) { %>
+        <div class="alert alert-danger">⚠️ Error loading top customers.</div>
+        <pre><%= e.getMessage() %></pre>
+    <% } %>
 </div>
 </body>
 </html>

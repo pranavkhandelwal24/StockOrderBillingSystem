@@ -30,6 +30,7 @@ public class AddStockServlet extends HttpServlet {
             } else {
                 request.setAttribute("message", "Failed to add stock item.");
             }
+
             RequestDispatcher rd = request.getRequestDispatcher("addStock.jsp");
             rd.forward(request, response);
 

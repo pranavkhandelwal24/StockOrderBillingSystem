@@ -1,24 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%@ page import="java.sql.*, java.util.*, com.inventory.utils.DBUtil" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sales Report</title>
+    <title>📅 Sales Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h2 {
+            font-weight: 600;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-4">
     <h2>📅 Sales Report</h2>
     <a href="dashboard.jsp" class="btn btn-secondary mb-3">← Back to Dashboard</a>
 
-    <form method="get" class="row g-3">
+    <!-- Date Filter Form -->
+    <form method="get" class="row g-3 mb-4">
         <div class="col-md-4">
-            <label>From Date</label>
+            <label class="form-label">From Date</label>
             <input type="date" name="from" class="form-control" required value="<%= request.getParameter("from") != null ? request.getParameter("from") : "" %>">
         </div>
         <div class="col-md-4">
-            <label>To Date</label>
+            <label class="form-label">To Date</label>
             <input type="date" name="to" class="form-control" required value="<%= request.getParameter("to") != null ? request.getParameter("to") : "" %>">
         </div>
         <div class="col-md-4 d-flex align-items-end">
@@ -48,14 +59,14 @@
     %>
 
     <hr>
-    <table class="table table-bordered mt-3">
-        <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>Total Amount (₹)</th>
-        </tr>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Total Amount (₹)</th>
+            </tr>
         </thead>
         <tbody>
         <%
@@ -67,26 +78,31 @@
                 <td><%= rs.getInt("order_id") %></td>
                 <td><%= rs.getTimestamp("order_date") %></td>
                 <td><%= rs.getString("name") %></td>
-                <td><%= rs.getDouble("total_amount") %></td>
+                <td>₹<%= String.format("%.2f", rs.getDouble("total_amount")) %></td>
             </tr>
-        <% } %>
-        <% if (orderCount == 0) { %>
-            <tr><td colspan="4" class="text-center text-muted">No orders found in this range.</td></tr>
-        <% } %>
+        <%
+            }
+            if (orderCount == 0) {
+        %>
+            <tr><td colspan="4" class="text-center text-muted">📭 No orders found in this range.</td></tr>
+        <%
+            }
+        %>
         </tbody>
     </table>
 
+    <!-- Summary Info -->
     <div class="alert alert-info">
         <strong>Total Orders:</strong> <%= orderCount %><br>
-        <strong>Total Revenue:</strong> ₹ <%= totalRevenue %>
+        <strong>Total Revenue:</strong> ₹ <%= String.format("%.2f", totalRevenue) %>
     </div>
 
-    <% 
+    <%
             } catch (Exception e) {
-                out.println("<div class='alert alert-danger'>Error fetching report.</div>");
+                out.println("<div class='alert alert-danger'>❌ Error fetching report.</div>");
                 e.printStackTrace();
             }
-        } 
+        }
     %>
 </div>
 </body>

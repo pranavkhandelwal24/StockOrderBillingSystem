@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.sql.*, com.inventory.utils.DBUtil" %>
+<%@ page import="java.sql.*, java.text.SimpleDateFormat, com.inventory.utils.DBUtil" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>🧾 Order History</title>
+    <title>Order History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -20,7 +20,7 @@
                 <th>Phone</th>
                 <th>Total Amount</th>
                 <th>Order Date</th>
-                <th>Download Bill</th>
+                <th>View Bill</th>
             </tr>
         </thead>
         <tbody>
@@ -34,20 +34,27 @@
                  ResultSet rs = ps.executeQuery()) {
 
                 boolean hasOrders = false;
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm a");
+
                 while (rs.next()) {
                     hasOrders = true;
+                    int orderId = rs.getInt("order_id");
+                    String customer = rs.getString("name");
+                    String email = rs.getString("email");
+                    String phone = rs.getString("phone");
+                    double amount = rs.getDouble("total_amount");
+                    Timestamp orderDate = rs.getTimestamp("order_date");
         %>
             <tr>
-                <td><%= rs.getInt("order_id") %></td>
-                <td><%= rs.getString("name") %></td>
-                <td><%= rs.getString("email") %></td>
-                <td><%= rs.getString("phone") %></td>
-                <td>₹<%= rs.getBigDecimal("total_amount") %></td>
-                <td><%= rs.getTimestamp("order_date") %></td>
+                <td><%= orderId %></td>
+                <td><%= customer %></td>
+                <td><%= email %></td>
+                <td><%= phone %></td>
+                <td>₹<%= String.format("%.2f", amount) %></td>
+                <td><%= sdf.format(orderDate) %></td>
                 <td>
-                    <a href="viewBill.jsp?orderId=<%= rs.getInt("order_id") %>" class="btn btn-sm btn-outline-primary">
-                        View Bill
-                    </a>
+                    <a href="order_bill.jsp?orderId=123">View Bill</a>
+
                 </td>
             </tr>
         <%

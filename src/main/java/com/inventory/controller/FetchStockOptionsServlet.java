@@ -8,18 +8,22 @@ import java.sql.*;
 
 public class FetchStockOptionsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
-        response.setContentType("text/html");
-        try (Connection conn = DBUtil.getConnection()) {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT stock_id, item_name FROM stock");
+        try (Connection conn = DBUtil.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT stock_id, item_name FROM stock")) {
 
             PrintWriter out = response.getWriter();
             while (rs.next()) {
-                out.println("<option value='" + rs.getInt("stock_id") + "'>" +
-                            rs.getString("item_name") + "</option>");
+                int id = rs.getInt("stock_id");
+                String name = rs.getString("item_name");
+                name = name.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                           .replace("\"", "&quot;").replace("'", "&#x27;");
+                out.println("<option value='" + id + "'>" + name + "</option>");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

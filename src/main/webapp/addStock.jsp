@@ -13,26 +13,28 @@
 
     <form action="addStock" method="post">
         <div class="mb-3">
-            <label>Item Name:</label>
-            <input type="text" class="form-control" name="item_name" required>
+            <label for="itemName">Item Name:</label>
+            <input id="itemName" type="text" class="form-control" name="item_name" required>
         </div>
         <div class="mb-3">
-            <label>Description:</label>
-            <textarea class="form-control" name="description"></textarea>
+            <label for="description">Description:</label>
+            <textarea id="description" class="form-control" name="description"></textarea>
         </div>
         <div class="mb-3">
-            <label>Quantity:</label>
-            <input type="number" class="form-control" name="quantity" required min="1">
+            <label for="quantity">Quantity:</label>
+            <input id="quantity" type="number" class="form-control" name="quantity" required min="1">
         </div>
         <div class="mb-3">
-            <label>Price:</label>
-            <input type="number" class="form-control" name="price" step="0.01" required>
+            <label for="price">Price:</label>
+            <input id="price" type="number" class="form-control" name="price" step="0.01" min="0.01" required>
         </div>
         <button type="submit" class="btn btn-primary">Add Stock</button>
     </form>
 
     <c:if test="${not empty message}">
-        <div class="alert alert-info mt-3">${message}</div>
+        <div class="alert ${message.contains('successfully') ? 'alert-success' : 'alert-danger'} mt-3">
+            ${message}
+        </div>
     </c:if>
 </div>
 </body>

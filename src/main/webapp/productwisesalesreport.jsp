@@ -6,6 +6,17 @@
 <head>
     <title>📊 Product-wise Sales Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h2 {
+            font-weight: 600;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -58,12 +69,12 @@
                     if (!hasData) {
             %>
             <tr>
-                <td colspan="4" class="text-center text-muted">No sales data available.</td>
+                <td colspan="4" class="text-center text-muted">📭 No sales data available.</td>
             </tr>
             <%
                     }
                 } catch (Exception e) {
-                    out.println("<tr><td colspan='4'>Error loading sales report.</td></tr>");
+                    out.println("<tr><td colspan='4'>❌ Error loading sales report.</td></tr>");
                     e.printStackTrace();
                 }
             %>

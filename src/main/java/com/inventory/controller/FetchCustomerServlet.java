@@ -1,34 +1,39 @@
 package com.inventory.controller;
 
-import com.inventory.utils.DBUtil;
-import javax.servlet.*;
-import javax.servlet.http.*;
 import java.io.*;
 import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
+import org.json.JSONObject;
+import com.inventory.utils.DBUtil;
+
 
 public class FetchCustomerServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-        
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getParameter("email");
         response.setContentType("application/json");
 
         try (Connection conn = DBUtil.getConnection()) {
-            String sql = "SELECT * FROM customers WHERE email = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement("SELECT name, email, phone, address FROM customers WHERE email = ?");
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                response.getWriter().write("{\"found\":true," +
-                    "\"name\":\"" + rs.getString("name") + "\"," +
-                    "\"phone\":\"" + rs.getString("phone") + "\"," +
-                    "\"address\":\"" + rs.getString("address") + "\"}");
+                JSONObject json = new JSONObject();
+                json.put("name", rs.getString("name"));
+                json.put("email", rs.getString("email"));
+                json.put("phone", rs.getString("phone"));
+                json.put("address", rs.getString("address"));
+                response.getWriter().print(json.toString());
             } else {
-                response.getWriter().write("{\"found\":false}");
+                response.setStatus(404);
+                response.getWriter().print("{\"error\":\"Customer not found\"}");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            response.setStatus(500);
+            response.getWriter().print("{\"error\":\"Server error\"}");
         }
     }
 }

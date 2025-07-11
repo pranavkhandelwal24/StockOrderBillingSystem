@@ -9,15 +9,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+@WebServlet("/AdjustStockServlet")
 public class AdjustStockServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get form parameters using the exact names from adjustStock.jsp
         String stockIdParam = request.getParameter("stock_id");
         String type = request.getParameter("adjustment_type");
         String qtyParam = request.getParameter("quantity_change");
         String reason = request.getParameter("reason");
 
-        // Validate inputs
         if (stockIdParam == null || qtyParam == null || stockIdParam.isEmpty() || qtyParam.isEmpty()) {
             response.sendRedirect("adjustStock.jsp?error=missingInput");
             return;
@@ -33,23 +32,23 @@ public class AdjustStockServlet extends HttpServlet {
             }
 
             try (Connection conn = DBUtil.getConnection()) {
-                // 1. Insert into stock_adjustments
-                PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO stock_adjustments (stock_id, adjustment_type, quantity_change, reason) VALUES (?, ?, ?, ?)"
-                );
-                ps.setInt(1, stockId);
-                ps.setString(2, type);
-                ps.setInt(3, quantityChange);
-                ps.setString(4, reason);
-                ps.executeUpdate();
+                // 1. Insert adjustment record
+                String insertAdjustmentSql = "INSERT INTO stock_adjustments (stock_id, adjustment_type, quantity_change, reason) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(insertAdjustmentSql)) {
+                    ps.setInt(1, stockId);
+                    ps.setString(2, type);
+                    ps.setInt(3, quantityChange);
+                    ps.setString(4, reason);
+                    ps.executeUpdate();
+                }
 
-                // 2. Update the stock quantity
-                PreparedStatement updateStock = conn.prepareStatement(
-                    "UPDATE stock SET quantity = quantity + ? WHERE stock_id = ?"
-                );
-                updateStock.setInt(1, quantityChange);
-                updateStock.setInt(2, stockId);
-                updateStock.executeUpdate();
+                // 2. Update stock quantity
+                String updateStockSql = "UPDATE stock SET quantity = quantity + ? WHERE stock_id = ?";
+                try (PreparedStatement updateStock = conn.prepareStatement(updateStockSql)) {
+                    updateStock.setInt(1, quantityChange);
+                    updateStock.setInt(2, stockId);
+                    updateStock.executeUpdate();
+                }
 
                 response.sendRedirect("adjustStock.jsp?success=true");
             }
